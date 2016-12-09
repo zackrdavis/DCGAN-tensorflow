@@ -69,8 +69,13 @@ def deconv2d(input_, output_shape,
                             initializer=tf.random_normal_initializer(stddev=stddev))
         
         try:
+            # resize-convolution a la distill.pub/2016/deconv-checkerboard
+            shape = input_.get_shape()
+            newShape = [2 * int(s) for s in shape[1:3]]
+            input_ = tf.image.resize_nearest_neighbor(input_, newShape)
+            # strides must be all 1s
             deconv = tf.nn.conv2d_transpose(input_, w, output_shape=output_shape,
-                                strides=[1, d_h, d_w, 1])
+                                strides=[1, 1, 1, 1])
 
         # Support for verisons of TensorFlow before 0.7.0
         except AttributeError:

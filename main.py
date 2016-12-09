@@ -22,6 +22,13 @@ flags.DEFINE_string("sample_dir", "samples", "Directory name to save the image s
 flags.DEFINE_boolean("is_train", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("is_crop", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
+
+flags.DEFINE_boolean("explore_cloud", False, "True for visualizing space of trained network, False for nothing [False]")
+flags.DEFINE_boolean("explore_animate", False, "True for visualizing space of trained network, False for nothing [False]")
+flags.DEFINE_boolean("explore_save", False, "True for visualizing space of trained network, False for nothing [False]")
+flags.DEFINE_boolean("explore_fuzz", False, "True for visualizing space of trained network, False for nothing [False]")
+flags.DEFINE_boolean("interpolate", False, "True for visualizing space of trained network, False for nothing [False]")
+
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -42,15 +49,25 @@ def main(_):
 
         if FLAGS.is_train:
             dcgan.train(FLAGS)
+        elif FLAGS.explore_cloud:
+            dcgan.load_and_cloud(FLAGS.checkpoint_dir)
+        elif FLAGS.explore_animate:
+            dcgan.load_and_animate(FLAGS.checkpoint_dir)
+        elif FLAGS.explore_save:
+            dcgan.load_and_save(FLAGS.checkpoint_dir)
+        elif FLAGS.explore_fuzz:
+            dcgan.load_and_fuzz(FLAGS.checkpoint_dir)
+        elif FLAGS.interpolate:
+            dcgan.interpolate(FLAGS.checkpoint_dir)
         else:
             dcgan.load(FLAGS.checkpoint_dir)
 
         if FLAGS.visualize:
-            # to_json("./web/js/layers.js", [dcgan.h0_w, dcgan.h0_b, dcgan.g_bn0],
-            #                               [dcgan.h1_w, dcgan.h1_b, dcgan.g_bn1],
-            #                               [dcgan.h2_w, dcgan.h2_b, dcgan.g_bn2],
-            #                               [dcgan.h3_w, dcgan.h3_b, dcgan.g_bn3],
-            #                               [dcgan.h4_w, dcgan.h4_b, None])
+            to_json("./web/js/layers.js", [dcgan.h0_w, dcgan.h0_b, dcgan.g_bn0],
+                                          [dcgan.h1_w, dcgan.h1_b, dcgan.g_bn1],
+                                          [dcgan.h2_w, dcgan.h2_b, dcgan.g_bn2],
+                                          [dcgan.h3_w, dcgan.h3_b, dcgan.g_bn3],
+                                          [dcgan.h4_w, dcgan.h4_b, None])
 
             # Below is codes for visualization
             OPTION = 2
