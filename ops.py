@@ -71,12 +71,11 @@ def deconv2d(input_, output_shape,
         w = tf.get_variable('w', [k_h, k_w, input_.get_shape()[-1], output_shape[-1]],
                             initializer=tf.random_normal_initializer(stddev=stddev))
                             
-        up = tf.image.resize_bilinear(input_, [output_shape[1], output_shape[2]])
+        up = tf.image.resize_nearest_neighbor(input_, [output_shape[1], output_shape[2]])
         
-        #padded = tf.pad(up, [[0,0], [2,2], [2,2], [0,0]])
+        padded = tf.pad(up, [[0,0], [2,2], [2,2], [0,0]], mode="SYMMETRIC")
 
-        conv = tf.nn.conv2d(up, w, strides=[1, 1, 1, 1], padding='SAME')
-
+        conv = tf.nn.conv2d(padded, w, strides=[1, 1, 1, 1], padding='VALID')
 
         biases = tf.get_variable('biases', [output_shape[-1]], initializer=tf.constant_initializer(0.0))
         conv = tf.reshape(tf.nn.bias_add(conv, biases), output_shape)
