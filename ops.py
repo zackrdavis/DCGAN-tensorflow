@@ -69,7 +69,7 @@ def deconv2d(input_, output_shape,
     with tf.variable_scope(name):
         # filter : [height, width, output_channels, in_channels]
 
-        up = tf.image.resize_bilinear(input_, [output_shape[1], output_shape[2]])
+        up = tf.image.resize_nearest_neighbor(input_, [output_shape[1], output_shape[2]])
         w = tf.get_variable('w', [k_h, k_h, input_.get_shape()[-1], output_shape[-1]],
                             initializer=tf.random_normal_initializer(stddev=stddev))
         
