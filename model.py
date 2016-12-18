@@ -225,12 +225,6 @@ class DCGAN(object):
                     errD_fake = self.d_loss_fake.eval({self.z: batch_z})
                     errD_real = self.d_loss_real.eval({self.images: batch_images})
                     errG = self.g_loss.eval({self.z: batch_z})
-                    
-                # OUTPUT RANDOM WEIGHTS JUST TO TEST SMOOTHNESS
-                if counter == 1:
-                    sample_z = np.random.uniform(-1, 1, size=(self.sample_size, self.z_dim))
-                    samples = self.sess.run(self.sampler, feed_dict={self.z: sample_z})
-                    save_images(samples, [8, 8], './{}/random_weights.png'.format(config.sample_dir))
 
                 counter += 1
                 print("Epoch: [%2d] [%4d/%4d] time: %4.4f, d_loss: %.8f, g_loss: %.8f" \
