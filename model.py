@@ -164,13 +164,25 @@ class DCGAN(object):
             print(" [*] Load SUCCESS")
         else:
             print(" [!] Load failed...")
+            
+        if config.is_train_once:
+            print 'IS TRAIN ONCE'
+            config.epoch = 1
+            
+        print 'config.epoch:'
+        print config.epoch
 
         for epoch in xrange(config.epoch):
-            if config.dataset == 'mnist':
+            if config.is_train_once:
+                batch_idxs = 1
+            elif config.dataset == 'mnist':
                 batch_idxs = min(len(data_X), config.train_size) // config.batch_size
             else:
                 data = glob(os.path.join("./data", config.dataset, "*.jpg"))
                 batch_idxs = min(len(data), config.train_size) // config.batch_size
+                
+            print 'batch_idxs:'
+            print batch_idxs
 
             for idx in xrange(0, batch_idxs):
                 if config.dataset == 'mnist':

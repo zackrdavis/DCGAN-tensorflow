@@ -23,6 +23,7 @@ flags.DEFINE_boolean("is_train", False, "True for training, False for testing [F
 flags.DEFINE_boolean("is_crop", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
 
+flags.DEFINE_boolean("is_train_once", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("explore_cloud", False, "True for visualizing space of trained network, False for nothing [False]")
 flags.DEFINE_boolean("explore_animate", False, "True for visualizing space of trained network, False for nothing [False]")
 flags.DEFINE_boolean("explore_save", False, "True for visualizing space of trained network, False for nothing [False]")
@@ -47,8 +48,9 @@ def main(_):
             dcgan = DCGAN(sess, image_size=FLAGS.image_size, batch_size=FLAGS.batch_size, output_size=FLAGS.output_size, c_dim=FLAGS.c_dim,
                     dataset_name=FLAGS.dataset, is_crop=FLAGS.is_crop, checkpoint_dir=FLAGS.checkpoint_dir, sample_dir=FLAGS.sample_dir)
 
-        if FLAGS.is_train:
+        if FLAGS.is_train or FLAGS.is_train_once:
             dcgan.train(FLAGS)
+            
         elif FLAGS.explore_cloud:
             dcgan.load_and_cloud(FLAGS.checkpoint_dir)
         elif FLAGS.explore_animate:
