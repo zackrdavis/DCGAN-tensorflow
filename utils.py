@@ -141,8 +141,8 @@ def make_gif(images, fname, duration=2, true_image=False):
       return ((x+1)/2*255).astype(np.uint8)
 
   clip = mpy.VideoClip(make_frame, duration=duration)
-  clip.write_gif(fname, fps = len(images) / duration)
-
+  clip.write_gif(fname, fps = len(images) / duration)    
+        
 def visualize(sess, dcgan, config, option):
   if option == 0:
     z_sample = np.random.uniform(-0.5, 0.5, size=(config.batch_size, dcgan.z_dim))
@@ -214,3 +214,25 @@ def visualize(sess, dcgan, config, option):
     new_image_set = [merge(np.array([images[idx] for images in image_set]), [10, 10]) \
         for idx in range(64) + range(63, -1, -1)]
     make_gif(new_image_set, './samples/test_gif_merged.gif', duration=8)
+
+  elif option == 5:
+    z_sample = np.random.uniform(-1, 1, size=(config.batch_size, dcgan.z_dim))
+    z_sample[0] = np.array([0, -0.25407623,  0.66350183, -0.20812231, -0.33903033, -0.26769776, -0.66711347,  0.03349641, -0.1486776 ,  0.41541274, -0.03954075,  0.58302704, -0.27521185,  0.91548686,  0.02869311,  0.0281416 , -0.72738066,  0.06324981,  0.51949551,  0.0022451 , -0.7008611 ,  0.62517695,  0.01430122,  0.31395642, -0.92487824,  0.60490944,  0.41634169,  0.43822845, -0.95745531,  0.8591304 ,  0.0796872 , -0.75432474,  0.83818465, -0.80521237,  0.16249838, -0.39888583, -0.87807631,  0.35205235, -0.2080706 , -0.16554136,  0.49262858,  0.89815651, -0.39533461, -0.5620577 , -0.55061178,  0.25926069, -0.06010334, -0.51251716, -0.80182285,  0.09913905, -0.71993438, -0.8597669 , -0.02389284,  0.07819066, -0.07435898,  0.85187736, -0.78993832,  0.96803998, -0.8288636 , -0.56734591, -0.29200267, -0.25584216, -0.52768764, -0.99238165, -0.05674626,  0.18787736, -0.50665448,  0.52648785, -0.19149244,  0.92434839,  0.14848914,  0.23378409,  0.97426875, -0.59661852, -0.923758  ,  0.94799163,  0.26166041, -0.12854056, -0.71565113,  0.3712363 ,  0.65530736, -0.58236903,  0.52534745, -0.72939241, -0.41733093,  0.482656  , -0.82134977,  0.78010094, -0.86205334,  0.22728372,  0.54321483, -0.17823753,  0.5879701 ,  0.44530112,  0.24647716, -0.92992426, -0.32488153, -0.65483974, -0.2864847 , -0.37449972])
+    
+    # fuzz around specified point
+    for i in xrange(1, config.batch_size - 1):
+        fuzz = np.random.uniform(-0.5, 0.5)
+
+        new_point = sample_points[0].copy()
+        new_point = np.add(new_point, fuzz)
+        new_point = np.clip(new_point, -1, 1)
+
+        sample_points[i] = new_point
+
+    for i in xrange(config.batch_size):
+        print config.batch_size - i
+        print repr(sample_points[config.batch_size - 1 - i])
+        print ' '
+        
+    samples = sess.run(dcgan.sampler, feed_dict={dcgan.z: z_sample})
+    save_images(samples, [8, 8], './samples/test_%s.png' % strftime("%Y-%m-%d %H:%M:%S", gmtime()))
