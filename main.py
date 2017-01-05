@@ -22,6 +22,9 @@ flags.DEFINE_string("sample_dir", "samples", "Directory name to save the image s
 flags.DEFINE_boolean("is_train", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("is_crop", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
+flags.DEFINE_boolean("load_and_save", False, "True for visualizing, False for nothing [False]")
+flags.DEFINE_boolean("load_and_fuzz", False, "True for visualizing, False for nothing [False]")
+flags.DEFINE_boolean("load_and_interpolate", False, "True for visualizing, False for nothing [False]")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -57,6 +60,12 @@ def main(_):
 
         if FLAGS.is_train:
             dcgan.train(FLAGS)
+        elif FLAGS.load_and_save:
+            dcgan.load_and_save(FLAGS.checkpoint_dir, FLAGS.sample_dir)
+        elif FLAGS.load_and_fuzz:
+            dcgan.load_and_fuzz(FLAGS.checkpoint_dir, FLAGS.sample_dir)
+        elif FLAGS.load_and_interpolate:
+            dcgan.load_and_interpolate(FLAGS.checkpoint_dir, FLAGS.sample_dir)
         else:
             dcgan.load(FLAGS.checkpoint_dir)
 
@@ -67,8 +76,8 @@ def main(_):
         #                               [dcgan.h4_w, dcgan.h4_b, None])
 
         # Below is codes for visualization
-        OPTION = 1
-        visualize(sess, dcgan, FLAGS, OPTION)
+        # OPTION = 1
+        # visualize(sess, dcgan, FLAGS, OPTION)
 
 if __name__ == '__main__':
     tf.app.run()
