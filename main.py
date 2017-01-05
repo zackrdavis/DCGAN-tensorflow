@@ -66,6 +66,12 @@ def main(_):
             dcgan.load_and_fuzz(FLAGS.checkpoint_dir, FLAGS.sample_dir)
         elif FLAGS.load_and_interpolate:
             dcgan.load_and_interpolate(FLAGS.checkpoint_dir, FLAGS.sample_dir)
+        elif FLAGS.visualize:
+            dcgan.load(FLAGS.checkpoint_dir)
+            # Below is codes for visualization
+            OPTION = 5
+            visualize(sess, dcgan, FLAGS, OPTION)
+            
         else:
             dcgan.load(FLAGS.checkpoint_dir)
 
@@ -75,9 +81,7 @@ def main(_):
         #                               [dcgan.h3_w, dcgan.h3_b, dcgan.g_bn3],
         #                               [dcgan.h4_w, dcgan.h4_b, None])
 
-        # Below is codes for visualization
-        # OPTION = 1
-        # visualize(sess, dcgan, FLAGS, OPTION)
+        
 
 if __name__ == '__main__':
     tf.app.run()
