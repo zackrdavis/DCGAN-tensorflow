@@ -69,7 +69,7 @@ def main(_):
         elif FLAGS.visualize:
             dcgan.load(FLAGS.checkpoint_dir)
             # Below is codes for visualization
-            OPTION = 5
+            OPTION = 6
             visualize(sess, dcgan, FLAGS, OPTION)
             
         else:
