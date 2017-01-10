@@ -129,7 +129,7 @@ class DCGAN(object):
             data_X, data_y = self.load_mnist()
         else:
             data = glob(os.path.join("./data", config.dataset, "*.jpg"))
-        #np.random.shuffle(data)
+        np.random.shuffle(data)
 
         d_optim = tf.train.AdamOptimizer(config.learning_rate, beta1=config.beta1) \
                           .minimize(self.d_loss, var_list=self.d_vars)
