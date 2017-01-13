@@ -49,7 +49,7 @@ class DCGAN(object):
         self.dfc_dim = dfc_dim
 
         self.c_dim = c_dim
-
+        
         # batch normalization : deals with poor initialization helps gradient flow
         self.d_bn1 = batch_norm(name='d_bn1')
         self.d_bn2 = batch_norm(name='d_bn2')
@@ -166,6 +166,9 @@ class DCGAN(object):
             print(" [*] Load SUCCESS")
         else:
             print(" [!] Load failed...")
+            
+        if config.train_once:
+            print(" TRAIN ONCE !")
 
         for epoch in xrange(config.epoch):
             if config.dataset == 'mnist':
@@ -233,7 +236,7 @@ class DCGAN(object):
                     % (epoch, idx, batch_idxs,
                         time.time() - start_time, errD_fake+errD_real, errG))
 
-                if np.mod(counter, 100) == 1:
+                if np.mod(counter, 100) == 1 or (config.train_once and np.mod(counter, 10) == 1):
                     if config.dataset == 'mnist':
                         samples, d_loss, g_loss = self.sess.run(
                             [self.sampler, self.d_loss, self.g_loss],
