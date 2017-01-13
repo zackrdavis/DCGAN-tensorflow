@@ -21,10 +21,11 @@ flags.DEFINE_string("checkpoint_dir", "checkpoint", "Directory name to save the 
 flags.DEFINE_string("sample_dir", "samples", "Directory name to save the image samples [samples]")
 flags.DEFINE_boolean("is_train", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("is_crop", False, "True for training, False for testing [False]")
-flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
+flags.DEFINE_integer("visualize", 0, "True for visualizing, False for nothing [False]")
 flags.DEFINE_boolean("load_and_save", False, "True for visualizing, False for nothing [False]")
 flags.DEFINE_boolean("load_and_fuzz", False, "True for visualizing, False for nothing [False]")
 flags.DEFINE_boolean("load_and_interpolate", False, "True for visualizing, False for nothing [False]")
+flags.DEFINE_boolean("train_once", False, "just a few rounds of training to adjust the network")
 FLAGS = flags.FLAGS
 
 def main(_):
@@ -58,22 +59,13 @@ def main(_):
                           checkpoint_dir=FLAGS.checkpoint_dir,
                           sample_dir=FLAGS.sample_dir)
 
-        if FLAGS.is_train:
+        if FLAGS.is_train or FLAGS.train_once:
             dcgan.train(FLAGS)
-        elif FLAGS.load_and_save:
-            dcgan.load_and_save(FLAGS.checkpoint_dir, FLAGS.sample_dir)
-        elif FLAGS.load_and_fuzz:
-            dcgan.load_and_fuzz(FLAGS.checkpoint_dir, FLAGS.sample_dir)
-        elif FLAGS.load_and_interpolate:
-            dcgan.load_and_interpolate(FLAGS.checkpoint_dir, FLAGS.sample_dir)
+        
         elif FLAGS.visualize:
             dcgan.load(FLAGS.checkpoint_dir)
-            # Below is codes for visualization
-            # 0 = explore
-            # 5 = fuzz
-            # 6 = interpolate
-            OPTION = 0
-            visualize(sess, dcgan, FLAGS, OPTION)
+
+            visualize(sess, dcgan, FLAGS, FLAGS.visualize)
             
         else:
             dcgan.load(FLAGS.checkpoint_dir)
